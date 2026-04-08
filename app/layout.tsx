@@ -1,5 +1,29 @@
 import type { Metadata } from 'next'
+import { Cormorant_Garamond, DM_Mono, DM_Sans } from 'next/font/google'
 import './globals.css'
+
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-cormorant',
+  display: 'swap',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-dm-sans',
+  display: 'swap',
+})
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  variable: '--font-dm-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'KI-Kompass — KI-Nutzungsrichtlinie in 10 Minuten',
@@ -20,11 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
-      <body className="noise">
+      <body className={`${cormorant.variable} ${dmSans.variable} ${dmMono.variable} noise`}>
         {children}
       </body>
     </html>
