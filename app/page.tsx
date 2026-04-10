@@ -91,8 +91,8 @@ export default function Home() {
           </h1>
 
           <p className="font-body text-base md:text-lg text-cream/60 max-w-xl mb-10 leading-relaxed animate-fade-up stagger-3">
-            Maßgeschneidert. DSGVO-konform. EU AI Act-ready. Juristisch geprüft.
-            Für KMUs im DACH-Raum — ohne Anwalt, ohne Wochenprojekt.
+            Maßgeschneidert auf Ihre Branche. Vollständig mit allen 12 Pflichtkapiteln.
+            Rechtsreferenzen automatisch validiert — nicht generisch, sondern korrekt.
           </p>
 
           {/* CTAs */}
@@ -155,31 +155,31 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs uppercase tracking-[0.25em] text-gold font-body font-medium mb-3">
-              Rechtliche Absicherung
+              Was KI-Kompass leistet
             </p>
             <h2 className="font-display text-3xl md:text-4xl font-light text-navy">
-              Nicht ein generisches Template.
+              Nicht generisch. Nicht lückenhaft.
               <br />
-              <em className="italic">Eine geprüfte Richtlinie.</em>
+              <em className="italic">Vollständig und korrekt.</em>
             </h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
-                icon: '⚖️',
-                title: 'Juristisch geprüft',
-                desc: 'Von einem Fachanwalt für IT-Recht und Datenschutzrecht geprüft. Alle DSGVO- und EU AI Act-Referenzen verifiziert.',
+                icon: '✓',
+                title: 'Rechtsreferenzen validiert',
+                desc: 'Alle DSGVO- und EU AI Act-Artikel werden vor der Auslieferung automatisch geprüft. Erfundene Gesetze, falsche Artikel und bekannte LLM-Fehler werden erkannt und korrigiert.',
               },
               {
                 icon: '🎯',
-                title: 'Maßgeschneidert',
-                desc: '13 gezielte Fragen. Branchenspezifische Regeln, passende Governance-Struktur, korrekte Risikoeinschätzung.',
+                title: 'Branchenspezifisch',
+                desc: '13 gezielte Fragen. Gesundheitswesen, Finanzen, IT — jede Branche hat eigene Regeln. Branchenfremde Inhalte werden automatisch herausgefiltert.',
               },
               {
-                icon: '🔄',
-                title: 'Sofort einsatzfähig',
-                desc: 'Kein "[hier einfügen]". Ihre Firmendaten sind eingebaut. Unterschreiben und einführen — fertig.',
+                icon: '📋',
+                title: '12 Pflichtkapitel — vollständig',
+                desc: 'Jedes Kapitel, das eine rechtskonforme KI-Policy braucht. Keine Lücken, keine Platzhalter außer Datum und Logo. Direkt einführbar.',
               },
             ].map((item, i) => (
               <div key={i} className="text-center p-8">

@@ -16,7 +16,7 @@ const steps = [
   {
     num: '03',
     title: 'Richtlinie erhalten',
-    desc: 'Unsere KI generiert Ihre maßgeschneiderte Policy. Sie erhalten sie sofort als PDF per E-Mail — und können jederzeit herunterladen.',
+    desc: 'Die generierte Policy wird automatisch validiert: Rechtsreferenzen geprüft, branchenfremde Inhalte gefiltert. Dann per E-Mail als PDF + DOCX — vollständig, direkt einführbar.',
     icon: '📥',
   },
 ]

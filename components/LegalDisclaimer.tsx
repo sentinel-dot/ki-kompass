@@ -65,14 +65,13 @@ export function LegalDisclaimer({
               isCompact ? 'text-xs' : 'text-xs'
             }`}
           >
-            Die durch KI-Kompass erstellte KI-Nutzungsrichtlinie dient als
-            professionelle Vorlage und Orientierungshilfe. Sie ersetzt{' '}
-            <strong className="text-amber-900">keine individuelle Rechtsberatung</strong>{' '}
-            durch einen Fachanwalt. Trotz sorgfältiger Erstellung und juristischer
-            Prüfung des Generierungsprozesses übernehmen wir keine Haftung für die
-            Vollständigkeit, Richtigkeit oder Aktualität der Inhalte. Wir empfehlen,
-            die Richtlinie vor der Einführung durch Ihre Rechtsabteilung oder einen
-            spezialisierten Anwalt prüfen zu lassen.
+            Die durch KI-Kompass erstellte KI-Nutzungsrichtlinie ist ein{' '}
+            KI-generiertes Dokument und dient als professionelle Vorlage und
+            Orientierungshilfe. Sie stellt{' '}
+            <strong className="text-amber-900">keine Rechtsberatung</strong>{' '}
+            dar und ersetzt nicht die individuelle Prüfung durch einen Fachanwalt.
+            Wir empfehlen, die Richtlinie vor der Einführung durch Ihre Rechtsabteilung
+            oder einen spezialisierten Anwalt prüfen zu lassen.
           </p>
         </div>
       </div>
@@ -145,12 +144,11 @@ export const DISCLAIMER_HTML = `
     line-height: 1.6;
     margin: 0;
   ">
-    Die vorliegende KI-Nutzungsrichtlinie wurde mit Hilfe von KI-Kompass erstellt und dient als
-    professionelle Vorlage und Orientierungshilfe. Sie ersetzt <strong>keine individuelle Rechtsberatung</strong>
-    durch einen Fachanwalt. Trotz sorgfältiger Erstellung und juristischer Prüfung des
-    Generierungsprozesses wird keine Haftung für die Vollständigkeit, Richtigkeit oder Aktualität
-    der Inhalte übernommen. Es wird empfohlen, die Richtlinie vor der Einführung durch eine
-    Rechtsabteilung oder einen spezialisierten Anwalt prüfen zu lassen.
+    Die vorliegende KI-Nutzungsrichtlinie ist ein KI-generiertes Dokument und dient als
+    professionelle Vorlage und Orientierungshilfe. Sie stellt <strong>keine Rechtsberatung</strong>
+    dar und ersetzt nicht die individuelle Prüfung durch einen Fachanwalt. Es wird empfohlen,
+    die Richtlinie vor der Einführung durch eine Rechtsabteilung oder einen spezialisierten
+    Anwalt prüfen zu lassen.
   </p>
 </div>
 `

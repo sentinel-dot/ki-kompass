@@ -247,6 +247,101 @@ export function validateLegalReferences(policyText: string): ValidationResult {
   }
 }
 
+// ─── Kontextuelle Konsistenzprüfung ─────────────────────────────────────────
+
+/**
+ * Prüft ob der Policy-Inhalt zum Fragebogen-Kontext passt.
+ *
+ * Ergänzt die Whitelist-Prüfung um inhaltliche Plausibilitätschecks:
+ * Branchenspezifische Inhalte dürfen nur erscheinen, wenn die entsprechende
+ * Branche/Datenkategorie im Fragebogen ausgewählt wurde.
+ */
+export function validateContextualConsistency(
+  policyText: string,
+  questionnaire: Record<string, unknown>
+): ValidationResult {
+  const errors: ValidationError[] = []
+
+  const branche = questionnaire.branche as string
+  const laender = (questionnaire.laender as string[]) ?? []
+  const datenarten = (questionnaire.datenarten as string[]) ?? []
+  const interne_ki = questionnaire.interne_ki as string
+
+  // BaFin/MaRisk nur für Finanzbranche
+  if (branche !== 'finanzen') {
+    const match = /BaFin|MaRisk/i.exec(policyText)
+    if (match) {
+      errors.push({
+        type: 'suspicious-reference',
+        message: 'BaFin/MaRisk-Referenz in Policy, obwohl Branche nicht "Finanzdienstleistungen" — entfernen oder ersetzen.',
+        excerpt: match[0],
+        position: match.index,
+      })
+    }
+  }
+
+  // Gesundheitsbranche-spezifische Inhalte
+  if (branche !== 'gesundheit') {
+    const match = /ärztliche Schweigepflicht|SGB\s+V|Patientendaten/i.exec(policyText)
+    if (match) {
+      errors.push({
+        type: 'suspicious-reference',
+        message: 'Gesundheitsspezifische Inhalte (Schweigepflicht/SGB V/Patientendaten) in Policy, obwohl Branche nicht "Gesundheitswesen" — entfernen.',
+        excerpt: match[0],
+        position: match.index,
+      })
+    }
+  }
+
+  // revDSG (Schweiz) nur wenn CH in Tätigkeitsländern
+  if (!laender.includes('schweiz')) {
+    const match = /revDSG|Schweizer\s+Datenschutzgesetz/i.exec(policyText)
+    if (match) {
+      errors.push({
+        type: 'suspicious-reference',
+        message: 'Schweizer Datenschutzgesetz (revDSG) in Policy, obwohl keine Schweizer Aktivität gewählt — entfernen.',
+        excerpt: match[0],
+        position: match.index,
+      })
+    }
+  }
+
+  // Art. 9 DSGVO (besondere Kategorien) nur bei sensitiven Datenarten
+  const sensitiveDataSelected = datenarten.some(d =>
+    ['gesundheitsdaten', 'personaldaten'].includes(d)
+  )
+  if (!sensitiveDataSelected) {
+    const match = /Art(?:ikel)?\.?\s*9\s+DSGVO/i.exec(policyText)
+    if (match) {
+      errors.push({
+        type: 'suspicious-reference',
+        message: 'Art. 9 DSGVO (besondere Kategorien personenbezogener Daten) in Policy, obwohl keine Gesundheits- oder Personaldaten gewählt — entfernen.',
+        excerpt: match[0],
+        position: match.index,
+      })
+    }
+  }
+
+  // Anhang A (Interne KI-Systeme) nur wenn interne_ki = 'ja'
+  if (interne_ki !== 'ja') {
+    const match = /#+\s*Anhang\s+A\b/i.exec(policyText)
+    if (match) {
+      errors.push({
+        type: 'suspicious-reference',
+        message: 'Anhang A (Interne KI-Systeme) in Policy, obwohl keine interne KI-Lösung angegeben — entfernen.',
+        excerpt: match[0],
+        position: match.index,
+      })
+    }
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    totalReferences: 0,
+  }
+}
+
 // ─── Retry-Prompt ───────────────────────────────────────────────────────────
 
 /**

@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import { SYSTEM_PROMPT, buildUserPrompt } from './prompt'
 import {
   validateLegalReferences,
+  validateContextualConsistency,
   buildCorrectionPrompt,
   type ValidationResult,
 } from './validation'
@@ -53,7 +54,19 @@ export async function generatePolicy(questionnaire: Record<string, unknown>): Pr
   })
 
   let policyText = extractText(initialMessage)
-  let validation: ValidationResult = validateLegalReferences(policyText)
+
+  // Beide Validierungen kombinieren: Rechtsreferenzen + kontextuelle Konsistenz
+  function runFullValidation(text: string): ValidationResult {
+    const legal = validateLegalReferences(text)
+    const contextual = validateContextualConsistency(text, questionnaire)
+    return {
+      valid: legal.valid && contextual.valid,
+      errors: [...legal.errors, ...contextual.errors],
+      totalReferences: legal.totalReferences,
+    }
+  }
+
+  let validation: ValidationResult = runFullValidation(policyText)
 
   // Retry-Loop bei Validierungsfehlern
   for (let attempt = 1; attempt <= MAX_VALIDATION_RETRIES && !validation.valid; attempt++) {
@@ -87,7 +100,7 @@ export async function generatePolicy(questionnaire: Record<string, unknown>): Pr
     })
 
     policyText = extractText(correctionMessage)
-    validation = validateLegalReferences(policyText)
+    validation = runFullValidation(policyText)
   }
 
   // Finale Prüfung — wenn immer noch Fehler, NICHT ausliefern

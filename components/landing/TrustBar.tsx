@@ -1,6 +1,6 @@
 export function TrustBar() {
   const items = [
-    { icon: '⚖️', text: 'Juristisch geprüft' },
+    { icon: '✓', text: 'Rechtsreferenzen validiert' },
     { icon: '🇩🇪', text: 'DSGVO-konform' },
     { icon: '🇪🇺', text: 'EU AI Act-ready' },
     { icon: '⚡', text: 'In 10 Minuten fertig' },

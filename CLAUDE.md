@@ -233,7 +233,9 @@ Jede Policy enthält diese 12 Pflichtkapitel + optionale Anhänge:
 
 ## Validierungs-Retry-Loop
 
-**Kritisches Feature:** Claude-Output wird immer auf Rechtsreferenzen geprüft (`lib/validation.ts`).
+**Kritisches Feature:** Claude-Output wird immer auf zwei Ebenen geprüft (`lib/validation.ts`).
+
+### Ebene 1: Rechtsreferenz-Whitelist (`validateLegalReferences`)
 
 **Validierte Fehler:**
 - `Art. 52` als Transparenz-Artikel zitiert (falsch — regelt GPAI-Klassifikation)
@@ -241,12 +243,30 @@ Jede Policy enthält diese 12 Pflichtkapitel + optionale Anhänge:
 - Art. 5 als "3 Verbote" oder "Social Scoring und Manipulation" zusammengefasst (falsch — 8 Verbote)
 - Erfundene Artikel außerhalb der Whitelist (EU AI Act Art. 1–113, DSGVO Art. 1–99)
 
-**Ablauf:**
+### Ebene 2: Kontextuelle Konsistenz (`validateContextualConsistency`)
+
+Prüft ob der Policy-Inhalt zum Fragebogen-Kontext passt — verhindert branchenfremde Inhalte:
+
+| Check | Bedingung |
+|-------|-----------|
+| BaFin/MaRisk | Nur wenn `branche = 'finanzen'` |
+| Schweigepflicht/SGB V/Patientendaten | Nur wenn `branche = 'gesundheit'` |
+| revDSG | Nur wenn `laender` enthält `'schweiz'` |
+| Art. 9 DSGVO (besondere Kategorien) | Nur wenn `datenarten` enthält Gesundheits- oder Personaldaten |
+| Anhang A (Interne KI-Systeme) | Nur wenn `interne_ki = 'ja'` |
+
+### Ablauf (beide Ebenen kombiniert, `lib/claude.ts`)
 1. Claude generiert Policy-Markdown
-2. Validator extrahiert alle "Art. X"-Referenzen und prüft gegen Whitelist
-3. Bei Fehler: Korrektur-Prompt an Claude (max. 2 Retries)
+2. `runFullValidation()` kombiniert beide Validierungen
+3. Bei Fehlern: Korrektur-Prompt an Claude (max. 2 Retries)
 4. Nach max. Retries: Hard Fail — Kunde erhält keine fehlerhafte Policy
 5. Admin-Alert wird ausgelöst
+
+### Marketing-Positionierung
+**Kein "juristisch geprüft"-Claim.** KI-Kompass wird als KI-gestützter Policy-Generator positioniert.
+Absicherung über: technische Validierung (automatisch) + Disclaimer ("keine Rechtsberatung") + AGB § 6.
+- `components/LegalDisclaimer.tsx` — formuliert als "KI-generiertes Dokument, keine Rechtsberatung"
+- Alle Marketing-Texte: "Rechtsreferenzen validiert" statt "juristisch geprüft"
 
 ## Rate Limiting
 
@@ -301,15 +321,25 @@ npm run test:e2e      # E2E Tests
 npm run test:all      # Alle Tests
 ```
 
-**15 Test-Szenarien** in `tests/scenarios.ts` (Branchen, Unternehmensgrößen, Länder-Kombinationen)
+**15 Normalszenarien** in `tests/scenarios.ts` (Branchen, Unternehmensgrößen, Länder-Kombinationen)
+**8 Grenzfall-Szenarien** in `tests/edge-cases.ts` — kritische Rechtsbereiche mit `criticalChecks` (100% Pflicht):
+- EC-1: Klinik + KI-Triage + Shadow AI (Art. 9, 22, 35 DSGVO)
+- EC-2: Bank + vollautomatisches Kredit-Scoring (Art. 22 DSGVO)
+- EC-3: Behörde + biometrische Echtzeit-Identifikation (Art. 5(1)(h) EU AI Act — verboten)
+- EC-4: Schweiz ONLY — kein EU AI Act, nur revDSG
+- EC-5: Alle Dimensionen auf Maximum — Kohärenztest
+- EC-6: Gesamtunternehmen Shadow AI — Übergangsstrategie
+- EC-7: HR + biometrisches Bewerberprofiling (Art. 22 + Art. 5(1)(g))
+- EC-8: Kleinstunternehmen + maximale Unsicherheit — Praxistauglichkeit
 
 **Test-Abdeckung:**
 - Zod-Schema-Validierung
 - Prompt-Aufbau
 - Rechtsreferenz-Validierung (inkl. bekannte LLM-Fehler)
+- Kontextuelle Konsistenz (branchenfremde Inhalte)
 - Rate Limiting Logik
 - Policy-Inhalts-Assertions
-- E2E: kompletter Generierungs-Workflow
+- E2E: Normalfälle (80% Bestehensquote) + Grenzfälle (100% criticalChecks)
 
 ## Rechtsgrundlagen — VERIFIZIERT
 

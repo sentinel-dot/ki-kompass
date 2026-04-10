@@ -4,8 +4,8 @@ import { useState } from 'react'
 
 const faqs = [
   {
-    q: 'Ist die Richtlinie wirklich juristisch geprüft?',
-    a: 'Ja. Die Vorlage und der Generierungsprozess wurden von einem Fachanwalt für IT-Recht und Datenschutzrecht geprüft. Die Richtlinie referenziert ausschließlich verifizierte DSGVO- und EU AI Act-Artikel. Für individuelle Rechtsberatung empfehlen wir dennoch einen Fachanwalt hinzuzuziehen.',
+    q: 'Wie wird die Qualität der Richtlinie sichergestellt?',
+    a: 'Die generierte Policy durchläuft vor der Auslieferung eine automatische Validierung: Alle DSGVO- und EU AI Act-Artikel werden gegen eine verifizierte Whitelist geprüft, bekannte LLM-Fehler (z.B. falsche Artikelnummern) werden erkannt und korrigiert. Branchenspezifische Inhalte werden nur dann eingebaut, wenn sie zur Fragebogen-Auswahl passen. Die Richtlinie ist ein KI-generiertes Dokument und ersetzt keine individuelle Rechtsberatung — für Hochrisiko-Anwendungen empfehlen wir zusätzlich einen Fachanwalt.',
   },
   {
     q: 'Welche Unternehmen profitieren am meisten?',
