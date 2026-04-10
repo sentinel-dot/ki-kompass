@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { TIERS, formatPrice } from '@/config/pricing'
 
 const faqs = [
   {
@@ -25,7 +26,7 @@ const faqs = [
   },
   {
     q: 'Was passiert bei Gesetzesänderungen?',
-    a: 'Im Enterprise-Paket (€299) erhalten Sie 12 Monate lang vierteljährliche Updates per E-Mail, wenn relevante Gesetzesänderungen (EU AI Act, DSGVO) Ihre Richtlinie betreffen. Im Basis- und Professional-Paket können Sie jederzeit eine neue Richtlinie zum aktuellen Preis erstellen.',
+    a: `Im Enterprise-Paket (${formatPrice('enterprise')}) erhalten Sie 12 Monate lang vierteljährliche Updates per E-Mail, wenn relevante Gesetzesänderungen (EU AI Act, DSGVO) Ihre Richtlinie betreffen. Im Basis- und Professional-Paket können Sie jederzeit eine neue Richtlinie zum aktuellen Preis erstellen.`,
   },
 ]
 

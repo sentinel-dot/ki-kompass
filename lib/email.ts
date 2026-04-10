@@ -1,19 +1,19 @@
+import * as Sentry from '@sentry/nextjs'
+import { tierLabel, type TierId } from '@/config/pricing'
+
 interface SendEmailParams {
   to: string
   companyName: string
   orderId: string
   downloadUrl: string
+  docxDownloadUrl?: string
   tier: string
 }
 
 export async function sendDownloadEmail(params: SendEmailParams): Promise<void> {
-  const { to, companyName, orderId, downloadUrl, tier } = params
+  const { to, companyName, orderId, downloadUrl, docxDownloadUrl, tier } = params
 
-  const tierLabels: Record<string, string> = {
-    basis: 'Basis (€79)',
-    professional: 'Professional (€149)',
-    enterprise: 'Enterprise (€299)',
-  }
+  const label = tierLabel(tier as TierId)
 
   const response = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -60,17 +60,26 @@ export async function sendDownloadEmail(params: SendEmailParams): Promise<void> 
       <div style="background: #F7F4EF; border-radius: 2px; padding: 20px; margin: 24px 0; border-left: 3px solid #C9A84C;">
         <p style="margin: 0 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; color: #C9A84C; font-weight: 500;">Bestelldetails</p>
         <p style="margin: 0; font-size: 13px; color: rgba(27,42,74,0.7);">
-          Paket: <strong style="color: #1B2A4A;">${tierLabels[tier] ?? tier}</strong><br>
+          Paket: <strong style="color: #1B2A4A;">${label}</strong><br>
           Bestellnummer: <span style="font-family: monospace; font-size: 12px;">${orderId}</span>
         </p>
       </div>
 
       <a
         href="${downloadUrl}"
-        style="display: block; background: #1B2A4A; color: white; text-decoration: none; padding: 16px 24px; border-radius: 2px; text-align: center; font-size: 14px; font-weight: 500; margin: 24px 0;"
+        style="display: block; background: #1B2A4A; color: white; text-decoration: none; padding: 16px 24px; border-radius: 2px; text-align: center; font-size: 14px; font-weight: 500; margin: 24px 0 12px;"
       >
         Richtlinie herunterladen (PDF) →
       </a>
+
+      ${docxDownloadUrl ? `
+      <a
+        href="${docxDownloadUrl}"
+        style="display: block; background: #F7F4EF; color: #1B2A4A; text-decoration: none; padding: 14px 24px; border-radius: 2px; text-align: center; font-size: 14px; font-weight: 500; margin: 0 0 24px; border: 1px solid rgba(27,42,74,0.12);"
+      >
+        Richtlinie herunterladen (Word/DOCX) →
+      </a>
+      ` : ''}
 
       <p style="color: rgba(27,42,74,0.4); font-size: 12px; line-height: 1.6; margin-bottom: 0;">
         Sie können Ihre Richtlinie auch jederzeit unter
@@ -98,6 +107,15 @@ export async function sendDownloadEmail(params: SendEmailParams): Promise<void> 
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(`E-Mail-Versand fehlgeschlagen: ${text}`)
+    const error = new Error(`E-Mail-Versand fehlgeschlagen: ${text}`)
+    Sentry.captureException(error, {
+      tags: {
+        service: 'brevo',
+        flow: 'payment-to-delivery',
+        step: 'download-email',
+        order_id: orderId,
+      },
+    })
+    throw error
   }
 }

@@ -1,3 +1,5 @@
+import { TIER_LIST } from '@/config/pricing'
+
 const steps = [
   {
     num: '01',
@@ -8,7 +10,7 @@ const steps = [
   {
     num: '02',
     title: 'Paket wählen & bezahlen',
-    desc: 'Wählen Sie zwischen Basis (€79), Professional (€149) oder Enterprise (€299). Sichere Zahlung via Stripe.',
+    desc: `Wählen Sie zwischen ${TIER_LIST.map(t => `${t.name} (€${t.price})`).join(', ')}. Sichere Zahlung via Stripe.`,
     icon: '💳',
   },
   {

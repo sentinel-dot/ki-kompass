@@ -1,3 +1,5 @@
+import { TIER_LIST } from '@/config/pricing'
+
 const chapters = [
   'Präambel & Zweck',
   'Definitionen (EU AI Act, DSGVO)',
@@ -11,53 +13,6 @@ const chapters = [
   'Schulung & Awareness (Art. 4 EU AI Act)',
   'Verstöße & Konsequenzen',
   'Überprüfung & Aktualisierung',
-]
-
-const tiers = [
-  {
-    name: 'Basis',
-    price: '79',
-    highlight: false,
-    features: [
-      '12 Pflichtkapitel, maßgeschneidert',
-      'DSGVO-konform (alle relevanten Artikel)',
-      'Branchenspezifische Regeln',
-      'PDF + DOCX Export',
-      'Sofort einsatzfähig',
-    ],
-    extras: [],
-    cta: 'Jetzt starten',
-    href: '/fragebogen?tier=basis',
-  },
-  {
-    name: 'Professional',
-    price: '149',
-    highlight: true,
-    features: [
-      'Alles aus Basis',
-      'EU AI Act Compliance-Checkliste',
-      'Mitarbeiter-Schulungsvorlage',
-      '5 goldene Regeln + Quiz',
-      'Unterschriftenfeld',
-    ],
-    extras: ['Anhang B: EU AI Act Checkliste', 'Anhang C: Schulungsvorlage'],
-    cta: 'Empfohlen wählen',
-    href: '/fragebogen?tier=professional',
-  },
-  {
-    name: 'Enterprise',
-    price: '299',
-    highlight: false,
-    features: [
-      'Alles aus Professional',
-      'Vierteljährliche Updates (12 Monate)',
-      'E-Mail-Benachrichtigung bei Gesetzesänderungen',
-      'Prioritäts-Support',
-    ],
-    extras: [],
-    cta: 'Enterprise wählen',
-    href: '/fragebogen?tier=enterprise',
-  },
 ]
 
 export function WhatYouGet() {
@@ -116,9 +71,9 @@ export function WhatYouGet() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {tiers.map((tier, i) => (
+            {TIER_LIST.map((tier, i) => (
               <div
-                key={i}
+                key={tier.id}
                 className={`relative p-8 rounded-sm transition-all duration-300 ${
                   tier.highlight
                     ? 'bg-navy text-cream shadow-2xl scale-105'
@@ -142,13 +97,13 @@ export function WhatYouGet() {
                       €{tier.price}
                     </span>
                     <span className={`font-body text-sm ${tier.highlight ? 'text-cream/50' : 'text-slate'}`}>
-                      einmalig
+                      {tier.period}
                     </span>
                   </div>
                 </div>
 
                 <ul className="space-y-3 mb-8">
-                  {tier.features.map((f, j) => (
+                  {tier.landingFeatures.map((f, j) => (
                     <li key={j} className="flex items-start gap-3">
                       <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${tier.highlight ? 'bg-gold/20' : 'bg-emerald-100'}`}>
                         <svg className={`w-2.5 h-2.5 ${tier.highlight ? 'text-gold' : 'text-emerald-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -170,7 +125,7 @@ export function WhatYouGet() {
                       : 'bg-navy text-cream hover:bg-navy-light'
                   }`}
                 >
-                  {tier.cta}
+                  {tier.landingCta}
                 </a>
               </div>
             ))}

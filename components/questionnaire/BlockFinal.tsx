@@ -2,50 +2,13 @@
 
 import { QuestionnaireData } from './types'
 import { EmailInput } from './FormField'
+import { TIER_LIST } from '@/config/pricing'
+import { LegalDisclaimer } from '@/components/LegalDisclaimer'
 
 interface Props {
   data: QuestionnaireData
   onChange: (updates: Partial<QuestionnaireData>) => void
 }
-
-const TIERS = [
-  {
-    id: 'basis' as const,
-    name: 'Basis',
-    price: '79',
-    includes: [
-      '12-Kapitel KI-Nutzungsrichtlinie',
-      'DSGVO-konform',
-      'Branchenspezifische Regeln',
-      'PDF + DOCX Export',
-    ],
-    highlight: false,
-  },
-  {
-    id: 'professional' as const,
-    name: 'Professional',
-    price: '149',
-    includes: [
-      'Alles aus Basis',
-      '+ EU AI Act Compliance-Checkliste',
-      '+ Mitarbeiter-Schulungsvorlage',
-      '+ Quiz & Unterschriftenfeld',
-    ],
-    highlight: true,
-  },
-  {
-    id: 'enterprise' as const,
-    name: 'Enterprise',
-    price: '299',
-    includes: [
-      'Alles aus Professional',
-      '+ Vierteljährliche Updates (12 Monate)',
-      '+ E-Mail bei Gesetzesänderungen',
-      '+ Prioritäts-Support',
-    ],
-    highlight: false,
-  },
-]
 
 export function BlockFinal({ data, onChange }: Props) {
   return (
@@ -65,7 +28,7 @@ export function BlockFinal({ data, onChange }: Props) {
           Paket wählen <span className="text-gold">*</span>
         </label>
         <div className="grid gap-3">
-          {TIERS.map(tier => (
+          {TIER_LIST.map(tier => (
             <label
               key={tier.id}
               className={`flex items-start gap-4 p-5 rounded-sm border cursor-pointer transition-all duration-150 ${
@@ -109,7 +72,7 @@ export function BlockFinal({ data, onChange }: Props) {
                   </span>
                 </div>
                 <ul className="space-y-1">
-                  {tier.includes.map((item, i) => (
+                  {tier.questionnaireFeatures.map((item, i) => (
                     <li key={i} className={`font-body text-xs flex items-start gap-1.5 ${data.tier === tier.id && tier.highlight ? 'text-cream/70' : 'text-navy/60'}`}>
                       <span className="text-gold mt-0.5 flex-shrink-0">✓</span>
                       {item}
@@ -129,6 +92,13 @@ export function BlockFinal({ data, onChange }: Props) {
         onChange={v => onChange({ email: v })}
         placeholder="max.mustermann@firma.de"
         hint="Die fertige Richtlinie wird an diese Adresse geschickt. Sie können sie auch direkt nach der Zahlung herunterladen."
+      />
+
+      {/* Rechtlicher Disclaimer mit Pflicht-Checkbox */}
+      <LegalDisclaimer
+        showCheckbox
+        checked={data.disclaimerAccepted}
+        onCheckedChange={(checked) => onChange({ disclaimerAccepted: checked })}
       />
 
       {/* Summary */}

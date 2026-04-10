@@ -1,4 +1,5 @@
 import Stripe from 'stripe'
+import { TIER_IDS, getStripePricing, type TierId } from '@/config/pricing'
 
 let _stripe: Stripe | null = null
 
@@ -20,20 +21,8 @@ export const stripe = {
   webhooks: { constructEvent: (...args: Parameters<Stripe['webhooks']['constructEvent']>) => getStripe().webhooks.constructEvent(...args) },
 }
 
-export const TIER_PRICES: Record<string, { priceId: string; amount: number; name: string }> = {
-  basis: {
-    priceId: process.env.STRIPE_PRICE_BASIS ?? '',
-    amount: 7900,
-    name: 'KI-Kompass Basis',
-  },
-  professional: {
-    priceId: process.env.STRIPE_PRICE_PROFESSIONAL ?? '',
-    amount: 14900,
-    name: 'KI-Kompass Professional',
-  },
-  enterprise: {
-    priceId: process.env.STRIPE_PRICE_ENTERPRISE ?? '',
-    amount: 29900,
-    name: 'KI-Kompass Enterprise',
-  },
-}
+/** Stripe-Pricing abgeleitet aus der zentralen Pricing-Config */
+export const TIER_PRICES: Record<string, { priceId: string; amount: number; name: string }> =
+  Object.fromEntries(
+    TIER_IDS.map(id => [id, getStripePricing(id)])
+  )

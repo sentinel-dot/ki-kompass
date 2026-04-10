@@ -1,20 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { stripe, TIER_PRICES } from '@/lib/stripe'
 import { createSupabaseServiceClient } from '@/lib/supabase'
+import { checkoutRequestSchema, formatZodErrorsDetailed } from '@/lib/schemas'
+import { applyRateLimit } from '@/lib/rate-limit'
+import * as Sentry from '@sentry/nextjs'
 
 export async function POST(req: NextRequest) {
-  try {
-    const data = await req.json()
-    const { email, tier, firmenname, ...questionnaire } = data
+  // ── Rate-Limiting (5 Requests/Minute pro IP) ────────────────────────
+  const rateLimitResponse = await applyRateLimit(req, 'checkout')
+  if (rateLimitResponse) return rateLimitResponse
 
-    if (!email || !tier || !firmenname) {
-      return NextResponse.json({ error: 'E-Mail, Paket und Firmenname sind erforderlich.' }, { status: 400 })
+  try {
+    const rawBody = await req.json()
+
+    // ── Zod-Validierung ──────────────────────────────────────────────
+    const parsed = checkoutRequestSchema.safeParse(rawBody)
+    if (!parsed.success) {
+      const { message, fieldErrors } = formatZodErrorsDetailed(parsed.error)
+      return NextResponse.json(
+        { error: message, fieldErrors },
+        { status: 400 }
+      )
     }
 
-    const tierConfig = TIER_PRICES[tier as string]
+    const data = parsed.data
+    const { email, tier, firmenname } = data
+
+    const tierConfig = TIER_PRICES[tier]
     if (!tierConfig) {
       return NextResponse.json({ error: 'Ungültiges Paket.' }, { status: 400 })
     }
+
+    // Sentry: Checkout-Kontext setzen
+    Sentry.setTag('flow', 'checkout')
+    Sentry.setTag('tier', tier)
 
     // Save order to Supabase
     const supabase = createSupabaseServiceClient()
@@ -75,6 +94,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ url: session.url })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unbekannter Fehler'
+    Sentry.captureException(err, {
+      tags: { flow: 'checkout', step: 'create-session' },
+    })
     return NextResponse.json({ error: `Generierung fehlgeschlagen, bitte Support kontaktieren. (${message})` }, { status: 500 })
   }
 }

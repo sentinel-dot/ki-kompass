@@ -1,67 +1,5 @@
 import Link from 'next/link'
-
-const tiers = [
-  {
-    name: 'Basis',
-    price: '79',
-    period: 'einmalig',
-    highlight: false,
-    description: 'Für Unternehmen, die eine sofort einsatzfähige, DSGVO-konforme KI-Richtlinie benötigen.',
-    features: [
-      { text: '12 Pflichtkapitel, maßgeschneidert', included: true },
-      { text: 'Firmenname + Branche eingebaut', included: true },
-      { text: 'DSGVO-konform (Art. 5, 6, 22, 25, 33, 44–49)', included: true },
-      { text: 'EU AI Act Art. 4 + Art. 5 (seit Feb 2025)', included: true },
-      { text: 'Branchenspezifische Regeln', included: true },
-      { text: 'PDF + DOCX Export', included: true },
-      { text: 'EU AI Act Compliance-Checkliste', included: false },
-      { text: 'Mitarbeiter-Schulungsvorlage', included: false },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: false },
-    ],
-    cta: 'Basis wählen',
-    href: '/fragebogen?tier=basis',
-  },
-  {
-    name: 'Professional',
-    price: '149',
-    period: 'einmalig',
-    highlight: true,
-    description: 'Für Unternehmen, die neben der Richtlinie auch Compliance-Werkzeuge für Mitarbeiter benötigen.',
-    features: [
-      { text: 'Alles aus Basis', included: true },
-      { text: 'Anhang B: EU AI Act Compliance-Checkliste', included: true },
-      { text: '10-Punkte-Checkliste mit Deadlines', included: true },
-      { text: 'Anhang C: Mitarbeiter-Schulungsvorlage', included: true },
-      { text: '"5 goldene Regeln für KI am Arbeitsplatz"', included: true },
-      { text: '5-Fragen-Quiz zum Verständnis-Check', included: true },
-      { text: 'Unterschriftenfeld zur Kenntnisnahme', included: true },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: false },
-      { text: 'Prioritäts-Support', included: false },
-    ],
-    cta: 'Professional wählen',
-    href: '/fragebogen?tier=professional',
-  },
-  {
-    name: 'Enterprise',
-    price: '299',
-    period: 'einmalig',
-    highlight: false,
-    description: 'Für Unternehmen, die langfristige Compliance sicherstellen und bei Gesetzesänderungen informiert bleiben möchten.',
-    features: [
-      { text: 'Alles aus Professional', included: true },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: true },
-      { text: 'E-Mail-Benachrichtigung bei Gesetzesänderungen', included: true },
-      { text: 'EU AI Act + DSGVO Monitoring', included: true },
-      { text: 'Prioritäts-Support', included: true },
-      { text: 'Dedizierter Ansprechpartner', included: true },
-      { text: 'Rabatt für weitere Dokumente', included: true },
-      { text: '', included: true },
-      { text: '', included: true },
-    ],
-    cta: 'Enterprise wählen',
-    href: '/fragebogen?tier=enterprise',
-  },
-]
+import { TIER_LIST } from '@/config/pricing'
 
 const legal = [
   { icon: '⚖️', title: 'Juristisch geprüft', desc: 'Fachanwalt für IT-Recht und Datenschutzrecht' },
@@ -106,9 +44,9 @@ export default function PreisePage() {
       <section className="pb-24 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="grid md:grid-cols-3 gap-6 items-start">
-            {tiers.map((tier, i) => (
+            {TIER_LIST.map((tier) => (
               <div
-                key={i}
+                key={tier.id}
                 className={`rounded-sm border relative ${
                   tier.highlight
                     ? 'bg-navy border-navy shadow-2xl md:-mt-4 md:-mb-4'
@@ -140,7 +78,7 @@ export default function PreisePage() {
                   </p>
 
                   <ul className="space-y-3 mb-8">
-                    {tier.features.filter(f => f.text).map((f, j) => (
+                    {tier.pricingFeatures.filter(f => f.text).map((f, j) => (
                       <li key={j} className="flex items-start gap-3">
                         <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${
                           f.included
@@ -176,7 +114,7 @@ export default function PreisePage() {
                         : 'bg-navy text-cream hover:bg-navy-light'
                     }`}
                   >
-                    {tier.cta}
+                    {tier.pricingCta}
                   </Link>
                 </div>
               </div>

@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/process-orders",
+      "schedule": "*/2 * * * *"
+    },
+    {
+      "path": "/api/quarterly-updates",
+      "schedule": "0 6 * * *"
+    }
+  ]
+}

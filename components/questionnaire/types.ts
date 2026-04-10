@@ -27,6 +27,9 @@ export interface QuestionnaireData {
   // Meta
   email: string
   tier: 'basis' | 'professional' | 'enterprise'
+
+  // Disclaimer
+  disclaimerAccepted: boolean
 }
 
 export type FormStep = 1 | 2 | 3 | 4 | 5 // 4 blocks + 1 email/tier step

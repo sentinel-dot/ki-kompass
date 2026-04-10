@@ -11,6 +11,7 @@ import { Block2 } from '@/components/questionnaire/Block2'
 import { Block3 } from '@/components/questionnaire/Block3'
 import { Block4 } from '@/components/questionnaire/Block4'
 import { BlockFinal } from '@/components/questionnaire/BlockFinal'
+import { TIERS, type TierId } from '@/config/pricing'
 
 const STEP_LABELS = ['Unternehmen', 'KI-Nutzung', 'Datenschutz', 'Governance', 'Abschluss']
 
@@ -48,6 +49,7 @@ function QuestionnaireInner() {
     verantwortung: '',
     email: '',
     tier: initialTier,
+    disclaimerAccepted: false,
   })
 
   const update = (updates: Partial<QuestionnaireData>) => {
@@ -79,6 +81,7 @@ function QuestionnaireInner() {
     if (step === 5) {
       if (!data.email.trim() || !data.email.includes('@')) return 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'
       if (!data.tier) return 'Bitte wählen Sie ein Paket.'
+      if (!data.disclaimerAccepted) return 'Bitte bestätigen Sie, dass Sie den rechtlichen Hinweis gelesen haben.'
     }
     return null
   }
@@ -211,7 +214,7 @@ function QuestionnaireInner() {
                   <>
                     Zur Zahlung →
                     <span className="font-display text-sm font-light opacity-70">
-                      €{data.tier === 'basis' ? '79' : data.tier === 'professional' ? '149' : '299'}
+                      €{TIERS[data.tier as TierId]?.price ?? '79'}
                     </span>
                   </>
                 )}

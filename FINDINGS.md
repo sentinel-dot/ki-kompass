@@ -131,15 +131,15 @@ Bewertung vom 09.04.2026. Gesamtstatus: **~70% fertig**. Starke Idee, gutes Fron
 ## Checkliste für Agent
 
 ```
-[ ] 1.1 Post-Generation-Validierung
-[ ] 1.2 Retry-Logik (Webhook entkoppeln)
-[ ] 1.3 Markdown-Parser ersetzen
-[ ] 2.1 Error-Monitoring (Sentry)
-[ ] 2.2 DOCX-Export implementieren oder entfernen
-[ ] 2.3 API-Input-Validierung (Zod)
-[ ] 3.1 Test-Suite für Policy-Generierung
-[ ] 3.2 Enterprise-Paket Backend
-[ ] 3.3 Rate-Limiting
-[ ] 3.4 Disclaimer sichtbarer machen
-[ ] 3.5 Pricing-Redundanz bereinigen
+[x] 1.1 Post-Generation-Validierung
+[x] 1.2 Retry-Logik (Webhook entkoppeln)
+[x] 1.3 Markdown-Parser ersetzen
+[x] 2.1 Error-Monitoring (Sentry)
+[x] 2.2 DOCX-Export implementieren oder entfernen
+[x] 2.3 API-Input-Validierung (Zod)
+[x] 3.1 Test-Suite für Policy-Generierung
+[x] 3.2 Enterprise-Paket Backend
+[x] 3.3 Rate-Limiting
+[x] 3.4 Disclaimer sichtbarer machen
+[x] 3.5 Pricing-Redundanz bereinigen
 ```

@@ -324,6 +324,6 @@ Die PDF wird über Puppeteer aus einem HTML-Template generiert. Design-Anforderu
 - TypeScript strict mode
 - Supabase Row Level Security (RLS) aktivieren
 - Stripe Webhook-Signatur immer verifizieren
-- Umgebungsvariablen: ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY, BREVO_API_KEY
+- Umgebungsvariablen: ANTHROPIC_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY, BREVO_API_KEY, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, RATE_LIMIT_DISABLED (optional, "true" zum Deaktivieren in Tests), CRON_SECRET, INTERNAL_API_KEY
 - Error Handling: Alle API-Calls in try/catch, Fehler an Nutzer als "Generierung fehlgeschlagen, bitte Support kontaktieren"
 - Kein console.log in Production, nur structured logging
