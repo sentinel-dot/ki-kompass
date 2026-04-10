@@ -80,14 +80,14 @@ describe('buildUserPrompt', () => {
       branche: 'finanzen',
       mitarbeiter: '500+',
       laender: ['deutschland', 'oesterreich'],
-      tier: 'enterprise',
+      tier: 'professional',
     }
     const prompt = buildUserPrompt(data)
     expect(prompt).toContain('Acme Corp')
     expect(prompt).toContain('finanzen')
     expect(prompt).toContain('500+')
     expect(prompt).toContain('deutschland')
-    expect(prompt).toContain('enterprise')
+    expect(prompt).toContain('professional')
   })
 
   it('escaped Sonderzeichen in JSON korrekt', () => {

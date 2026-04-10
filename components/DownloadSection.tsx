@@ -15,7 +15,6 @@ interface DownloadSectionProps {
 const tierLabels: Record<string, string> = {
   basis: 'Basis',
   professional: 'Professional',
-  enterprise: 'Enterprise',
 }
 
 export function DownloadSection({

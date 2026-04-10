@@ -123,7 +123,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
       striktheit: 'restriktiv',
       verantwortung: 'komitee',
       email: 'compliance@medicare-kliniken.de',
-      tier: 'enterprise',
+      tier: 'professional',
       disclaimerAccepted: true,
     },
     expected: {
@@ -226,7 +226,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
       striktheit: 'restriktiv',
       verantwortung: 'komitee',
       email: 'compliance@finanzplus.de',
-      tier: 'enterprise',
+      tier: 'professional',
       disclaimerAccepted: true,
     },
     expected: {
@@ -629,7 +629,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
       striktheit: 'restriktiv',
       verantwortung: 'dsb',
       email: 'datenschutz@hr-consult.de',
-      tier: 'enterprise',
+      tier: 'professional',
       disclaimerAccepted: true,
     },
     expected: {
@@ -660,11 +660,11 @@ export const TEST_SCENARIOS: TestScenario[] = [
   },
 
   // ──────────────────────────────────────────────────────────────────────────
-  // 13. Enterprise — Österreich + Deutschland
+  // 13. Professional — Österreich + Deutschland
   // ──────────────────────────────────────────────────────────────────────────
   {
-    name: 'Enterprise Fertigung AT+DE',
-    description: 'Großes Fertigungsunternehmen in AT+DE mit internem KI-System, Enterprise-Tier',
+    name: 'Professional Fertigung AT+DE',
+    description: 'Großes Fertigungsunternehmen in AT+DE mit internem KI-System, Professional-Tier',
     questionnaire: {
       firmenname: 'IndustrieTech Holding AG',
       branche: 'fertigung',
@@ -681,7 +681,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
       striktheit: 'ausgewogen',
       verantwortung: 'komitee',
       email: 'compliance@industrietech.at',
-      tier: 'enterprise',
+      tier: 'professional',
       disclaimerAccepted: true,
     },
     expected: {
@@ -779,7 +779,7 @@ export const TEST_SCENARIOS: TestScenario[] = [
       striktheit: 'ausgewogen',
       verantwortung: 'it',
       email: 'compliance@globalcode.io',
-      tier: 'enterprise',
+      tier: 'professional',
       disclaimerAccepted: true,
     },
     expected: {

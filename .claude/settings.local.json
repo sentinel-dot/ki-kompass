@@ -4,7 +4,8 @@
       "Bash(npm install:*)",
       "Bash(ls -la /Users/x/coding/ki-kompass/lib/*.ts)",
       "Bash(xargs -I {} basename {})",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npx tsc:*)"
     ]
   }
 }

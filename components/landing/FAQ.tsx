@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { TIERS, formatPrice } from '@/config/pricing'
 
 const faqs = [
   {
@@ -26,7 +25,7 @@ const faqs = [
   },
   {
     q: 'Was passiert bei Gesetzesänderungen?',
-    a: `Im Enterprise-Paket (${formatPrice('enterprise')}) erhalten Sie 12 Monate lang vierteljährliche Updates per E-Mail, wenn relevante Gesetzesänderungen (EU AI Act, DSGVO) Ihre Richtlinie betreffen. Im Basis- und Professional-Paket können Sie jederzeit eine neue Richtlinie zum aktuellen Preis erstellen.`,
+    a: 'Da der EU AI Act gestaffelt in Kraft tritt (Art. 4+5 seit Feb 2025, High-Risk ab Aug 2026), sollten Richtlinien regelmäßig überprüft werden. Sie können jederzeit eine aktualisierte Richtlinie zum aktuellen Preis neu erstellen — alle Angaben aus dem Fragebogen können Sie dabei neu eingeben oder anpassen.',
   },
 ]
 

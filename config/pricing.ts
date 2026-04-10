@@ -7,7 +7,7 @@
 
 // ─── Typen ───────────────────────────────────────────────────────────
 
-export type TierId = 'basis' | 'professional' | 'enterprise'
+export type TierId = 'basis' | 'professional'
 
 export interface TierFeature {
   text: string
@@ -74,7 +74,6 @@ export const TIERS: Record<TierId, TierConfig> = {
       { text: 'PDF + DOCX Export', included: true },
       { text: 'EU AI Act Compliance-Checkliste', included: false },
       { text: 'Mitarbeiter-Schulungsvorlage', included: false },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: false },
     ],
     questionnaireFeatures: [
       '12-Kapitel KI-Nutzungsrichtlinie',
@@ -112,8 +111,6 @@ export const TIERS: Record<TierId, TierConfig> = {
       { text: '"5 goldene Regeln für KI am Arbeitsplatz"', included: true },
       { text: '5-Fragen-Quiz zum Verständnis-Check', included: true },
       { text: 'Unterschriftenfeld zur Kenntnisnahme', included: true },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: false },
-      { text: 'Prioritäts-Support', included: false },
     ],
     questionnaireFeatures: [
       'Alles aus Basis',
@@ -127,55 +124,18 @@ export const TIERS: Record<TierId, TierConfig> = {
     href: '/fragebogen?tier=professional',
     stripeName: 'KI-Kompass Professional',
   },
-  enterprise: {
-    id: 'enterprise',
-    name: 'Enterprise',
-    price: 299,
-    priceInCents: 29900,
-    period: 'einmalig',
-    description:
-      'Für Unternehmen, die langfristige Compliance sicherstellen und bei Gesetzesänderungen informiert bleiben möchten.',
-    highlight: false,
-    landingFeatures: [
-      'Alles aus Professional',
-      'Vierteljährliche Updates (12 Monate)',
-      'E-Mail-Benachrichtigung bei Gesetzesänderungen',
-      'Prioritäts-Support',
-    ],
-    pricingFeatures: [
-      { text: 'Alles aus Professional', included: true },
-      { text: 'Vierteljährliche Updates (12 Monate)', included: true },
-      { text: 'E-Mail-Benachrichtigung bei Gesetzesänderungen', included: true },
-      { text: 'EU AI Act + DSGVO Monitoring', included: true },
-      { text: 'Prioritäts-Support', included: true },
-      { text: 'Dedizierter Ansprechpartner', included: true },
-      { text: 'Rabatt für weitere Dokumente', included: true },
-    ],
-    questionnaireFeatures: [
-      'Alles aus Professional',
-      '+ Vierteljährliche Updates (12 Monate)',
-      '+ E-Mail bei Gesetzesänderungen',
-      '+ Prioritäts-Support',
-    ],
-    extras: [],
-    landingCta: 'Enterprise wählen',
-    pricingCta: 'Enterprise wählen',
-    href: '/fragebogen?tier=enterprise',
-    stripeName: 'KI-Kompass Enterprise',
-  },
 }
 
 // ─── Hilfsfunktionen ─────────────────────────────────────────────────
 
-/** Sortierte Liste aller Tiers (Basis → Professional → Enterprise) */
+/** Sortierte Liste aller Tiers (Basis → Professional) */
 export const TIER_LIST: TierConfig[] = [
   TIERS.basis,
   TIERS.professional,
-  TIERS.enterprise,
 ]
 
 /** Alle gültigen Tier-IDs */
-export const TIER_IDS: TierId[] = ['basis', 'professional', 'enterprise']
+export const TIER_IDS: TierId[] = ['basis', 'professional']
 
 /** Preis als formatierter String: "€79" */
 export function formatPrice(tierId: TierId): string {

@@ -160,8 +160,9 @@ export default function PreisePage() {
           <span className="font-display text-sm font-medium text-cream/40">KI-Kompass</span>
           <p className="font-body text-xs text-cream/30">© 2026 · Alle Preise inkl. MwSt. · DSGVO-konform</p>
           <div className="flex gap-6">
-            <a href="#" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Impressum</a>
-            <a href="#" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Datenschutz</a>
+            <Link href="/impressum" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Datenschutz</Link>
+            <Link href="/agb" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">AGB</Link>
           </div>
         </div>
       </footer>

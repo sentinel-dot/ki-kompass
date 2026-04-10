@@ -26,7 +26,7 @@ export interface QuestionnaireData {
 
   // Meta
   email: string
-  tier: 'basis' | 'professional' | 'enterprise'
+  tier: 'basis' | 'professional'
 
   // Disclaimer
   disclaimerAccepted: boolean

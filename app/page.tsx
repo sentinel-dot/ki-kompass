@@ -241,9 +241,9 @@ export default function Home() {
             © 2026 KI-Kompass · Kein Abo · Einmalzahlung · DSGVO-konform
           </p>
           <div className="flex gap-6">
-            <a href="#" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Impressum</a>
-            <a href="#" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Datenschutz</a>
-            <a href="#" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">AGB</a>
+            <Link href="/impressum" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">Datenschutz</Link>
+            <Link href="/agb" className="font-body text-xs text-cream/30 hover:text-cream/60 transition-colors">AGB</Link>
           </div>
         </div>
       </footer>

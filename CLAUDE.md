@@ -14,7 +14,7 @@ KI-Kompass ist ein SaaS-Produkt, das maßgeschneiderte KI-Nutzungsrichtlinien f�
 - **Sprache:** TypeScript (strict mode)
 - **Datenbank:** Supabase (PostgreSQL + Auth + File Storage)
 - **Payment:** Stripe Checkout (Einmalzahlung)
-- **KI:** Claude API (@anthropic-ai/sdk ^0.86.1) — Policy-Generierung + Update-Generierung + Law Change Alerts
+- **KI:** Claude API (@anthropic-ai/sdk ^0.86.1) — Policy-Generierung
 - **PDF:** Puppeteer-core + @sparticuz/chromium (auf Vercel serverless)
 - **DOCX:** docx library (^9.5.0) — parallele Generierung mit PDF
 - **Markdown:** marked.js (^15.0.0) mit custom Renderer (farbkodierte Tabellen)
@@ -39,7 +39,13 @@ ki-kompass/
 │   ├── fragebogen/
 │   │   └── page.tsx                      # 5-stufiges Multi-Step-Formular (Blocks 1-4 + Final)
 │   ├── preise/
-│   │   └── page.tsx                      # Pricing (Basis €79 / Professional €149 / Enterprise €299)
+│   │   └── page.tsx                      # Pricing (Basis €79 / Professional €149)
+│   ├── impressum/
+│   │   └── page.tsx                      # Impressum (§ 5 DDG)
+│   ├── datenschutz/
+│   │   └── page.tsx                      # Datenschutzerklärung (DSGVO)
+│   ├── agb/
+│   │   └── page.tsx                      # AGB + Widerrufsbelehrung
 │   ├── checkout/
 │   │   └── page.tsx                      # Stripe Checkout Weiterleitung
 │   ├── ergebnis/
@@ -48,26 +54,19 @@ ki-kompass/
 │       ├── generate-policy/route.ts      # POST: Interner Test-Endpoint (Bearer INTERNAL_API_KEY)
 │       ├── create-checkout/route.ts      # POST: Stripe Session erstellen (Rate Limit: 5/min)
 │       ├── webhook/route.ts              # POST: Stripe Webhook (Signatur-Verifikation, 30/min)
-│       ├── process-orders/route.ts       # GET: Cron Worker — verarbeitet offene Orders (*/2 min)
-│       ├── quarterly-updates/route.ts    # GET: Cron — Enterprise Quarterly Updates (tägl. 6 Uhr)
-│       └── law-change-alerts/route.ts    # POST: Cron — Law Change Alerts an Enterprise (CRON_SECRET)
+│       └── process-orders/route.ts       # GET: Cron Worker — verarbeitet offene Orders (*/2 min)
 │
 ├── lib/
 │   ├── claude.ts                         # Claude API Client + Validation-Retry-Loop (max 2 Retries)
 │   ├── prompt.ts                         # SYSTEM_PROMPT + buildUserPrompt()
-│   ├── update-prompt.ts                  # UPDATE_SYSTEM_PROMPT + buildUpdateUserPrompt()
 │   ├── validation.ts                     # Rechtsreferenz-Validierung (DSGVO/EU AI Act Whitelist)
 │   ├── schemas.ts                        # Zod Schemas (Fragebogen, Checkout, API Requests)
 │   ├── stripe.ts                         # Stripe Client + Pricing-Mapping
 │   ├── supabase.ts                       # Supabase Client (Service Role)
 │   ├── email.ts                          # Brevo: sendDownloadEmail()
-│   ├── email-updates.ts                  # Brevo: sendUpdateEmail() + sendLawChangeAlertEmail()
 │   ├── policy-generator.ts               # processOpenOrders() + processOrder() (Worker-Logik)
 │   ├── markdown-to-html.ts               # marked.js Custom Renderer (farbkodierte Tabellen)
 │   ├── docx-generator.ts                 # DOCX-Export (color-coded tables, Header/Footer)
-│   ├── subscription.ts                   # Enterprise Subscription Management
-│   ├── law-change-notifier.ts            # Alert-Erstellung + -Verteilung an Enterprise-Kunden
-│   ├── quarterly-updater.ts              # Quarterly Update Generierung für Subscriptions
 │   ├── rate-limit.ts                     # Upstash Redis Rate Limiter (sliding window)
 │   └── admin-alert.ts                    # Admin-Benachrichtigung bei failed Orders
 │
@@ -96,8 +95,7 @@ ki-kompass/
 ├── supabase/
 │   └── migrations/
 │       ├── 20260409_add_docx_url.sql     # docx_url Spalte in orders
-│       ├── 20260409_add_retry_columns.sql # retry_count, processing_started_at, last_error, admin_alerted_at
-│       └── 20260409_add_subscriptions.sql # subscriptions, subscription_updates, law_change_alerts
+│       └── 20260409_add_retry_columns.sql # retry_count, processing_started_at, last_error, admin_alerted_at
 │
 ├── tests/
 │   ├── unit/
@@ -146,22 +144,8 @@ ki-kompass/
     - **Parallel:** PDF (Puppeteer) + DOCX (docx library) generieren
     - Beide Dateien in Supabase Storage hochladen → `policy_url` + `docx_url` setzen
     - Download-E-Mail via Brevo senden
-    - Bei Enterprise-Tier: Subscription erstellen (`lib/subscription.ts`)
 11. Bei max. Retries überschritten: Admin-Alert senden, Order markieren
 12. Nutzer kann auf `/ergebnis/[id]` PDF + DOCX herunterladen
-
-### Enterprise Subscription-Flow
-
-- **Quarterly Updates** (`/api/quarterly-updates`, täglich 6 Uhr):
-  - Findet Subscriptions mit fälligen Updates (`next_update_due_at <= now()`)
-  - Regeneriert Policy mit `UPDATE_SYSTEM_PROMPT` (diff-fokussiert)
-  - Speichert Version in `subscription_updates` mit Change Summary
-  - Sendet Update-E-Mail mit neuer PDF/DOCX
-
-- **Law Change Alerts** (`/api/law-change-alerts`):
-  - Admin erstellt Alert (Titel, Beschreibung, Rechtsreferenz, Schweregrad)
-  - Claude generiert personalisierte Relevanz-Einschätzung pro Kunde
-  - Massenversand an alle aktiven Enterprise-Subscriber
 
 ## Datenbank-Schema (Supabase)
 
@@ -172,7 +156,7 @@ CREATE TABLE orders (
   id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   email                 TEXT NOT NULL,
   company_name          TEXT NOT NULL,
-  tier                  TEXT NOT NULL CHECK (tier IN ('basis', 'professional', 'enterprise')),
+  tier                  TEXT NOT NULL CHECK (tier IN ('basis', 'professional')),
   questionnaire         JSONB NOT NULL,
   stripe_session        TEXT,
   payment_status        TEXT NOT NULL DEFAULT 'pending'
@@ -186,60 +170,6 @@ CREATE TABLE orders (
   processing_started_at TIMESTAMPTZ,             -- Lock-Timestamp
   last_error            TEXT,                    -- Debugging
   admin_alerted_at      TIMESTAMPTZ              -- Verhindert doppelte Alerts
-);
-```
-
-### subscriptions (Enterprise only)
-
-```sql
-CREATE TABLE subscriptions (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  order_id            UUID REFERENCES orders(id),
-  email               TEXT NOT NULL,
-  company_name        TEXT NOT NULL,
-  tier                TEXT NOT NULL,
-  starts_at           TIMESTAMPTZ NOT NULL,
-  expires_at          TIMESTAMPTZ NOT NULL,
-  status              TEXT NOT NULL CHECK (status IN ('active', 'expired', 'cancelled')),
-  last_update_at      TIMESTAMPTZ,
-  next_update_due_at  TIMESTAMPTZ,
-  update_count        INT DEFAULT 0,
-  questionnaire       JSONB NOT NULL,
-  current_policy_markdown TEXT
-);
-```
-
-### subscription_updates
-
-```sql
-CREATE TABLE subscription_updates (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  subscription_id UUID REFERENCES subscriptions(id),
-  order_id        UUID REFERENCES orders(id),
-  version         INT NOT NULL,
-  policy_markdown TEXT,
-  change_summary  TEXT,
-  pdf_url         TEXT,
-  docx_url        TEXT,
-  status          TEXT NOT NULL CHECK (status IN ('pending', 'generating', 'completed', 'failed')),
-  email_sent_at   TIMESTAMPTZ
-);
-```
-
-### law_change_alerts
-
-```sql
-CREATE TABLE law_change_alerts (
-  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title            TEXT NOT NULL,
-  description      TEXT NOT NULL,
-  law_reference    TEXT NOT NULL,
-  effective_date   DATE,
-  severity         TEXT NOT NULL CHECK (severity IN ('info', 'warning', 'critical')),
-  status           TEXT NOT NULL CHECK (status IN ('draft', 'sending', 'sent')),
-  created_by       TEXT,
-  total_recipients INT DEFAULT 0,
-  emails_sent      INT DEFAULT 0
 );
 ```
 
@@ -298,8 +228,8 @@ Jede Policy enthält diese 12 Pflichtkapitel + optionale Anhänge:
 12. **Überprüfung & Aktualisierung** — Halbjährlich, Versionstabelle
 
 **Anhang A: Interne KI-Systeme** — NUR wenn F8 = "Ja"
-**Anhang B: EU AI Act Compliance-Checkliste** — NUR Professional/Enterprise
-**Anhang C: Mitarbeiter-Schulungsvorlage** — NUR Professional/Enterprise
+**Anhang B: EU AI Act Compliance-Checkliste** — NUR Professional
+**Anhang C: Mitarbeiter-Schulungsvorlage** — NUR Professional
 
 ## Validierungs-Retry-Loop
 
@@ -328,8 +258,6 @@ Alle API-Endpunkte via `lib/rate-limit.ts` (Upstash Redis, sliding window):
 | `/api/create-checkout` | 5/min | IP-basiert |
 | `/api/webhook` | 30/min | Stripe-Signatur |
 | `/api/process-orders` | 20/min | `CRON_SECRET` Header |
-| `/api/quarterly-updates` | 20/min | `CRON_SECRET` Header |
-| `/api/law-change-alerts` | 20/min | `CRON_SECRET` Header |
 
 Deaktivierung für Tests: `RATE_LIMIT_DISABLED=true`
 
@@ -338,8 +266,7 @@ Deaktivierung für Tests: `RATE_LIMIT_DISABLED=true`
 ```json
 {
   "crons": [
-    { "path": "/api/process-orders",     "schedule": "*/2 * * * *" },
-    { "path": "/api/quarterly-updates",  "schedule": "0 6 * * *"   }
+    { "path": "/api/process-orders", "schedule": "*/2 * * * *" }
   ]
 }
 ```
@@ -491,7 +418,7 @@ Folge exakt dieser Kapitelstruktur. Jedes Kapitel beginnt mit einem kurzen Einle
 Falls interne_ki = "Ja":
 → **Anhang A: Interne KI-Systeme** — Systembeschreibung aus Fragebogen, Zugangsberechtigungen, Logging/Nachvollziehbarkeit, Dokumentationspflichten
 
-Falls tier = "professional" oder "enterprise":
+Falls tier = "professional":
 → **Anhang B: EU AI Act Compliance-Checkliste** — 10-Punkte-Checkliste. BEACHTE: Art. 4 + Art. 5 unter "bereits fällig" führen, High-Risk-Pflichten unter "Deadline 2. August 2026"
 → **Anhang C: Mitarbeiter-Schulungsvorlage** — "5 goldene Regeln für KI am Arbeitsplatz", 5-Fragen-Quiz, Unterschriftenfeld
 
@@ -536,7 +463,7 @@ Wenn das Unternehmen NUR in der Schweiz tätig ist: EU AI Act gilt NICHT direkt.
 - Nummerierte Kapitel und Unterkapitel (1., 1.1, 1.2)
 - Jedes Kapitel mit Einleitungssatz + "Zusammenfassung für Mitarbeiter" am Ende
 - Aufzählungen nur wo sie Lesbarkeit verbessern
-- Länge: 3.000–5.000 Wörter (Basis) / 5.000–8.000 Wörter (Professional/Enterprise)
+- Länge: 3.000–5.000 Wörter (Basis) / 5.000–8.000 Wörter (Professional)
 
 ## Qualitätskriterien
 - SOFORT einsatzfähig — keine Platzhalter außer Datum und Logo
@@ -567,7 +494,6 @@ STRIPE_SECRET_KEY
 STRIPE_WEBHOOK_SECRET
 STRIPE_PRICE_BASIS
 STRIPE_PRICE_PROFESSIONAL
-STRIPE_PRICE_ENTERPRISE
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_KEY

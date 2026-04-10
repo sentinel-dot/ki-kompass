@@ -16,7 +16,7 @@ import { TIERS, type TierId } from '@/config/pricing'
 const STEP_LABELS = ['Unternehmen', 'KI-Nutzung', 'Datenschutz', 'Governance', 'Abschluss']
 
 function getInitialTier(param: string | null): QuestionnaireData['tier'] {
-  if (param === 'professional' || param === 'enterprise') return param
+  if (param === 'professional') return param
   return 'basis'
 }
 

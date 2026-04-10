@@ -21,7 +21,6 @@ import { sendDownloadEmail } from './email'
 import { sendAdminAlert } from './admin-alert'
 import { markdownToHTML } from './markdown-to-html'
 import { generateDOCX } from './docx-generator'
-import { createSubscriptionForOrder } from './subscription'
 import { DISCLAIMER_HTML } from '@/components/LegalDisclaimer'
 import * as Sentry from '@sentry/nextjs'
 
@@ -247,27 +246,6 @@ export async function processOrder(order: Order): Promise<ProcessResult> {
             })
           )
           Sentry.addBreadcrumb({ category: 'policy', message: 'Download-E-Mail gesendet', level: 'info' })
-
-          // 7. Enterprise: Subscription für vierteljährliche Updates anlegen
-          if (order.tier === 'enterprise') {
-            try {
-              await createSubscriptionForOrder({
-                id: orderId,
-                email: order.email,
-                company_name: order.company_name,
-                tier: order.tier,
-                policyMarkdown: markdownPolicy,
-              })
-              Sentry.addBreadcrumb({ category: 'subscription', message: 'Enterprise-Subscription erstellt', level: 'info' })
-            } catch (subErr) {
-              // Subscription-Fehler sind nicht kritisch — Policy wurde bereits ausgeliefert
-              console.warn(`[Worker] Enterprise-Subscription konnte nicht erstellt werden:`, subErr)
-              Sentry.captureException(subErr, {
-                tags: { order_id: orderId, flow: 'subscription', step: 'create' },
-                level: 'warning',
-              })
-            }
-          }
 
           console.log(`[Worker] ✅ Order ${orderId} erfolgreich verarbeitet.`)
           span.setStatus({ code: 1, message: 'ok' }) // SpanStatusCode.OK

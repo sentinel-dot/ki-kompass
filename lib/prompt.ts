@@ -32,7 +32,7 @@ Folge exakt dieser Kapitelstruktur. Jedes Kapitel beginnt mit einem kurzen Einle
 Falls interne_ki = "ja":
 → **Anhang A: Interne KI-Systeme** — Systembeschreibung aus Fragebogen, Zugangsberechtigungen, Logging/Nachvollziehbarkeit, Dokumentationspflichten
 
-Falls tier = "professional" oder "enterprise":
+Falls tier = "professional":
 → **Anhang B: EU AI Act Compliance-Checkliste** — 10-Punkte-Checkliste. BEACHTE: Art. 4 + Art. 5 unter "bereits fällig" führen, High-Risk-Pflichten unter "Deadline 2. August 2026"
 → **Anhang C: Mitarbeiter-Schulungsvorlage** — "5 goldene Regeln für KI am Arbeitsplatz", 5-Fragen-Quiz, Unterschriftenfeld
 
@@ -78,7 +78,7 @@ Wenn das Unternehmen NUR in der Schweiz tätig ist: EU AI Act gilt NICHT direkt.
 - Nummerierte Kapitel und Unterkapitel (1., 1.1, 1.2)
 - Jedes Kapitel mit Einleitungssatz + "Zusammenfassung für Mitarbeiter" am Ende
 - Aufzählungen nur wo sie Lesbarkeit verbessern
-- Länge: 3.000–5.000 Wörter (Basis) / 5.000–8.000 Wörter (Professional/Enterprise)
+- Länge: 3.000–5.000 Wörter (Basis) / 5.000–8.000 Wörter (Professional)
 
 ## Qualitätskriterien
 - SOFORT einsatzfähig — keine Platzhalter außer Datum und Logo

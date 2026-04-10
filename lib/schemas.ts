@@ -62,7 +62,7 @@ export const VERANTWORTUNG_VALUES = [
 ] as const
 
 export const TIER_VALUES = [
-  'basis', 'professional', 'enterprise',
+  'basis', 'professional',
 ] as const
 
 // ─── Questionnaire-Schema ───────────────────────────────────────────────────
